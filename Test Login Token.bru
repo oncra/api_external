@@ -1,0 +1,16 @@
+meta {
+  name: Test Login Token
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base}}/api/external/v1/test/login-token
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{token_user}}
+  password: {{token_pass}}
+}

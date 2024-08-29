@@ -1,0 +1,20 @@
+meta {
+  name: Drive
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base}}/api/external/v1/drive?project_nrs=REN-L-002
+  body: none
+  auth: basic
+}
+
+params:query {
+  project_nrs: REN-L-002
+}
+
+auth:basic {
+  username: {{token_user}}
+  password: {{token_pass}}
+}

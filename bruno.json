@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Climate Cleanup Api External",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
