@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: openapi
+  version: 1.0.0
+paths:
+  /api/external/v1/drive:
+    get:
+      summary: Drive
+      operationId: Drive
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: project_nrs
+          in: query
+          description: ''
+          required: true
+          example: REN-L-002
+      security:
+        drive: []
+  /api/external/v1/test/login-token:
+    get:
+      summary: Test Login Token
+      operationId: Test Login Token
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      security:
+        test_login_token: []
+servers:
+  - url: https://ledger.test.oncra.org
+components:
+  schemas: {}
+  requestBodies: {}
+  securitySchemes:
+    drive:
+      type: http
+      scheme: basic
+    test_login_token:
+      type: http
+      scheme: basic
