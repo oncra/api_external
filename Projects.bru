@@ -1,0 +1,20 @@
+meta {
+  name: Projects
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base}}/api/external/v1/projects?project_nrs=AAA,LORC001
+  body: none
+  auth: basic
+}
+
+params:query {
+  project_nrs: AAA,LORC001
+}
+
+auth:basic {
+  username: {{token_user}}
+  password: {{token_pass}}
+}

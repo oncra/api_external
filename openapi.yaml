@@ -33,6 +33,27 @@ paths:
           description: ''
       security:
         test_login_token: []
+  /api/external/v1/projects:
+    get:
+      summary: Projects
+      operationId: Projects
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: project_nrs
+          in: query
+          description: |
+            List of comma seperated project keys, it can be just the first 3 characters
+            
+            e.g.: "AAA,BBBL001" will return all projects with the first 3 letters AAA and the project BBBL001'
+          required: false
+          example: AAA-A-000
+      security:
+        test_login_token: []
 servers:
   - url: https://ledger.test.oncra.org
 components:
