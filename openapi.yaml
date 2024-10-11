@@ -55,7 +55,7 @@ paths:
       security:
         test_login_token: []
 servers:
-  - url: https://ledger.test.oncra.org
+  - url: https://registry.test.oncra.org
 components:
   schemas: {}
   requestBodies: {}
