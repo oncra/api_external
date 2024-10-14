@@ -1,68 +1,127 @@
 openapi: 3.0.0
+servers:
+  - url: 'https://registry.test.oncra.org'
+    description: Acceptance
+    variables: {}
+  - url: 'https://registry.oncra.org'
+    description: Production
 info:
-  title: openapi
+  description: External access to the oncra ledger
   version: 1.0.0
+  title: Swagger Oncra External
+  termsOfService: 'https://registry.oncra.org/legal'
+  contact:
+    email: ict@oncra.org
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+tags: []
 paths:
   /api/external/v1/drive:
     get:
-      summary: Drive
-      operationId: Drive
-      description: ''
-      tags:
-        - ''
-      responses:
-        '200':
-          description: ''
+      summary: Drive documents
+      description: >-
+        Links to the public documents available on the Google Drive: Oncra
+        Public
       parameters:
         - name: project_nrs
           in: query
-          description: ''
-          required: true
-          example: REN-L-002
-      security:
-        drive: []
-  /api/external/v1/test/login-token:
-    get:
-      summary: Test Login Token
-      operationId: Test Login Token
-      description: ''
-      tags:
-        - ''
+          required: false
+          schema:
+            type: string
+          description: >-
+            List of comma separated project keys, it can be just the first 3
+            characters
+                        
+            e.g.: "AAA,BBBL001" will return all projects with the first 3
+            letters AAA and the project BBBL001
+      operationId: ''
       responses:
         '200':
-          description: ''
-      security:
-        test_login_token: []
+          description: Default response
+          content:
+            application/json:
+              schema: {}
   /api/external/v1/projects:
     get:
-      summary: Projects
-      operationId: Projects
+      summary: ''
       description: ''
-      tags:
-        - ''
-      responses:
-        '200':
-          description: ''
       parameters:
         - name: project_nrs
           in: query
-          description: |
-            List of comma seperated project keys, it can be just the first 3 characters
-            
-            e.g.: "AAA,BBBL001" will return all projects with the first 3 letters AAA and the project BBBL001'
           required: false
-          example: AAA-A-000
-      security:
-        test_login_token: []
-servers:
-  - url: https://registry.test.oncra.org
+          schema:
+            type: string
+          description: >-
+            List of comma separated project keys, it can be just the first 3
+            characters
+                        
+            e.g.: "AAA,BBBL001" will return all projects with the first 3
+            letters AAA and the project BBBL001
+      operationId: ''
+      responses:
+        default:
+          description: Default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+  /api/external/v1/test/login-token:
+    get:
+      summary: ''
+      description: ''
+      parameters: []
+      operationId: ''
+      responses:
+        '200':
+          description: Default response
+          content:
+            application/json:
+              schema:
+                - project_id: 1
+                  project_nr: BBLL008
+                  project_name: Amsterdam Bamboo
+                  project_description: >-
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Idemne, quod iucunde? Sedulo, inquam, faciam. Istic sum,
+                    inquit. Duo Reges: constructio interrete. At multis se
+                    probavit. Apparet statim, quae sint officia, quae actiones.</p>
+                    <p>Efficiens dici potest. Bonum patria: miserum exilium. De
+                    hominibus dici non necesse est. Sed quot homines, tot
+                    sententiae;</p>
+externalDocs:
+  description: See AsyncAPI example
+  url: 'https://oncra.github.io/api_external/'
 components:
-  schemas: {}
-  requestBodies: {}
+  schemas:
+    Projects:
+      - field: 2
+        str: value
+  requestBodies:
+    Pet:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pet'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Pet'
+      description: Pet object that needs to be added to the store
+      required: true
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true
   securitySchemes:
-    drive:
+    Basic Authentication:
       type: http
-      scheme: basic
-    test_login_token:
-      type: http
-      scheme: basic
+      scheme: Basic
+  links: {}
+  callbacks: {}
+security:
+  - Basic Authentication: []
