@@ -1,0 +1,20 @@
+meta {
+  name: Get stock list
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base}}/api/external/v2_dummy/data/stock/list
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "o_project_id": 1,
+    "o_purchase_transfer_id": "01c44f5477e8cf0c7ce6a3b2c27b9e9",
+    "o_is_purchase_success": true,
+    "o_is_purchase_reverted": false
+  }
+}

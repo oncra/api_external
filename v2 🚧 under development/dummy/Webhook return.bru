@@ -1,0 +1,23 @@
+meta {
+  name: Webhook return
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base}}/api/external/v2_dummy/webhook/return
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keys": [
+      "project_new_available",
+      "1.project_content_change",
+      "1.order_update",
+      "1.order_new",
+      "1.stock_update"
+    ]
+  }
+}

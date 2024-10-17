@@ -1,0 +1,571 @@
+{
+  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "https://registry.test.oncra.org",
+      "description": "Acceptance",
+      "variables": {}
+    },
+    { "url": "https://registry.oncra.org", "description": "Production" }
+  ],
+  "info": {
+    "description": "External access to the oncra ledger",
+    "version": "1.0.0",
+    "title": "Swagger Oncra External",
+    "termsOfService": "https://registry.oncra.org/legal",
+    "contact": { "email": "ict@oncra.org" },
+    "license": { "name": "MIT", "url": "https://opensource.org/licenses/MIT" }
+  },
+  "tags": [
+    {
+      "name": "v2",
+      "x-displayName": "v2 🚧 under development",
+      "description": "It is advised to use this api inside a product like [Make](https://www.make.com/) to connect with your e-commerce website\n\nReplace the start of the uri with `/api/external/v2_dummy/` to get fake responses"
+    },
+    {
+      "name": "v1",
+      "description": "This is a first attempt at creating an api for 3rd parties"
+    }
+  ],
+  "webhooks": {
+    "ExternalV2Webhook": {
+      "post": {
+        "operationId": "ExternalV2Webhook",
+        "tags": ["v2"],
+        "summary": "Webhook send",
+        "description": "When an update occurs from the registry that concerns your application, this http `post` request will be sent, from the registry, to your webhook url",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExternalV2WebhookRequest"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "cURL",
+            "label": "CLI",
+            "source": "curl -X POST -u tokenusername:tokenpassword -H \"Content-Type: application/json\" -d '{\"keys\":[\"project_new_available\"]}' \"https://mysite.example.org/my_webhook/path\"\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "You should return a 200 status to indicate that the data was received successfully"
+          },
+          "4xx": {
+            "description": "Any other status code returned, will result in the same request being sent at a later time"
+          },
+          "5xx": {
+            "description": "Any other status code returned, will result in the same request being sent at a later time"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/external/v1/drive": {
+      "get": {
+        "operationId": "v1_get_drive",
+        "summary": "Drive documents",
+        "tags": ["v1"],
+        "description": "Links to the public documents available on the Google Drive: Oncra Public",
+        "security": [{ "basic": [] }],
+        "parameters": [
+          {
+            "name": "project_nrs",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "List of comma separated project keys, it can be just the first 3 characters\n            \ne.g.: \"AAA,BBBL001\" will return all projects with the first 3 letters AAA and the project BBBL001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "401": { "description": "Your token is invalid" }
+        }
+      }
+    },
+    "/api/external/v1/projects": {
+      "get": {
+        "operationId": "v1_get_projects",
+        "tags": ["v1"],
+        "summary": "List projects",
+        "security": [{ "basic": [] }],
+        "parameters": [
+          {
+            "name": "project_nrs",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "List of comma separated project keys, it can be just the first 3 characters\n            \ne.g.: \"AAA,BBBL001\" will return all projects with the first 3 letters AAA and the project BBBL001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Projects" }
+              }
+            }
+          },
+          "401": { "description": "Your token is invalid" }
+        }
+      }
+    },
+    "/api/external/v1/test/login-token": {
+      "get": {
+        "operationId": "v1_get_test_login_token",
+        "tags": ["v1"],
+        "summary": "Test login token",
+        "security": [{ "basic": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TestLogin" }
+              }
+            }
+          },
+          "401": { "description": "Your token is invalid" },
+          "404": { "description": "The website is not available" },
+          "5xx": {
+            "description": "An unhandled server error occurred, please contact us at ict@oncra.org"
+          }
+        }
+      }
+    },
+    "/api/external/v2/webhook-return": {
+      "post": {
+        "operationId": "v2_post_webhook_return",
+        "tags": ["v2"],
+        "summary": "Webhook return",
+        "description": "On receiving a webhook, you should call this api to retrieve the contents of those updates.",
+        "security": [{ "basic": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExternalV2WebhookReturnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of responses from each key given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalV2WebhookReturnResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v2/event/order/create": {
+      "post": {
+        "operationId": "ExternalV2EventOrderCreate",
+        "tags": ["v2"],
+        "summary": "Event order create",
+        "description": "",
+        "security": [{ "basic": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExternalV2EventOrderCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of responses from each key given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalV2EventOrderCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v2/event/order/update": {
+      "post": {
+        "operationId": "ExternalV2EventOrderUpdate",
+        "tags": ["v2"],
+        "summary": "Event order update",
+        "description": "",
+        "security": [{ "basic": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExternalV2EventOrderUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of responses from each key given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalV2EventOrderUpdateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v2/data/stock/list": {
+      "get": {
+        "operationId": "ExternalV2GetStockList",
+        "tags": ["v2"],
+        "summary": "Get stock list",
+        "description": "",
+        "security": [{ "basic": [] }],
+        "responses": {
+          "200": {
+            "description": "List of responses from each key given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalV2GetStockListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/v2/data/order/list-by-project": {
+      "get": {
+        "operationId": "ExternalV2GetOrderListByProject",
+        "tags": ["v2"],
+        "summary": "Get order list by project",
+        "description": "",
+        "security": [{ "basic": [] }],
+        "responses": {
+          "200": {
+            "description": "List of responses from each key given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalV2GetOrderListByProjectResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "See AsyncAPI example",
+    "url": "https://oncra.github.io/api_external/"
+  },
+  "components": {
+    "schemas": {
+      "ExternalV2WebhookRequest": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "array",
+            "description": "List of update keys, the number is the project id to update",
+            "example": [
+              "project_new_available",
+              "1.project_content_change",
+              "1.order_update",
+              "1.order_new",
+              "1.stock_update"
+            ],
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "ExternalV2WebhookReturnRequest": {
+        "$ref": "#/components/schemas/ExternalV2WebhookRequest"
+      },
+      "ExternalV2WebhookReturnResponse": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "$ref": "#/components/schemas/ExternalV2WebhookReturnResponseProjectNewAvailable"
+          },
+          {
+            "$ref": "#/components/schemas/ExternalV2WebhookReturnResponseNProjectContentChange"
+          },
+          {
+            "$ref": "#/components/schemas/ExternalV2WebhookReturnResponseNOrderUpdate"
+          },
+          {
+            "$ref": "#/components/schemas/ExternalV2WebhookReturnResponseNOrderNew"
+          },
+          {
+            "$ref": "#/components/schemas/ExternalV2WebhookReturnResponseNStockUpdate"
+          }
+        ],
+        "minItems": 1
+      },
+      "ExternalV2WebhookReturnResponseProjectNewAvailable": {
+        "type": "object",
+        "example": {
+          "key": "project_new_available",
+          "o_id": 25,
+          "o_nr": "FKKA025",
+          "o_pathway": "L",
+          "o_methods": [],
+          "o_area": 30.2,
+          "o_area_unit": "ha",
+          "o_details": "<p>accusamus ipsum dignissimos repellat quisquam dolore quaerat illum voluptas natus qui et facere vero earum debitis quas ex id pariatur magni adipisci necessitatibus officia qui non illum sint non. tenetur rerum inventore nihil ea accusamus ducimus vero eveniet ut laudantium est ducimus explicabo et similique praesentium quod quia in laborum ipsam adipisci quas provident excepturi consectetur velit possimus aliquam eos deleniti aut reiciendis laudantium voluptatibus odit magni eligendi et nisi magni molestias nisi.</p>"
+        }
+      },
+      "ExternalV2WebhookReturnResponseNProjectContentChange": {
+        "type": "object",
+        "example": {
+          "key": "1.project_content_change",
+          "o_id": 1,
+          "o_nr": "XQHJ001",
+          "o_pathway": "C",
+          "o_methods": [],
+          "o_area": 39.2,
+          "o_area_unit": "m3",
+          "o_details": "<p>non cum accusamus et id sint et maxime nemo vitae molestias ipsam eos qui vitae et beatae eaque sit corporis et est enim nostrum sunt mollitia temporibus esse perspiciatis ut harum et atque sint sed sapiente rem molestiae ea optio dolores voluptatem dicta molestiae repellendus laudantium est quia vero dolorem enim enim cum id unde libero fugit eligendi eum fugit autem voluptas dignissimos facere qui autem ullam voluptate quidem ducimus reprehenderit dolorum qui similique debitis et dolor quis fuga cum commodi sunt sapiente quam placeat dolores cumque quidem corporis dolor molestiae veniam est. at sed ut aspernatur magnam eos culpa corporis vel corporis natus officia pariatur dolor consequatur vero deleniti voluptas ut consequatur quia nisi ut sunt quisquam consequuntur sequi magni est ad ut deleniti animi repudiandae praesentium ducimus ad culpa sint nesciunt deleniti occaecati omnis veniam perferendis iusto quasi non laborum aut molestiae quisquam perspiciatis culpa et id dolorum velit non voluptate nihil animi.</p>"
+        }
+      },
+      "ExternalV2WebhookReturnResponseNOrderUpdate": {
+        "type": "object",
+        "example": {
+          "key": "1.order_update",
+          "o_project_id": 1,
+          "o_stock_sum_in_kg": 100000
+        }
+      },
+      "ExternalV2WebhookReturnResponseNOrderNew": {
+        "type": "object",
+        "example": {
+          "key": "1.order_new",
+          "o_purchase_transfer_id": "",
+          "o_broker_transfer_id": "2a0fe5dcfb2ec7d9175fb76004abc4c",
+          "o_purchaser_email": "mcdermott@gmail.com",
+          "o_purchaser_name": "Ms. Elisabeth Corwin I",
+          "o_purchaser_organization": "ab ipsam nihil nihil.",
+          "o_project_id": 1,
+          "o_project_nr": "YFGT001",
+          "o_project_name": "quo consectetur modi.",
+          "o_certificate_available": true,
+          "o_certificate_name": "YFGT001-5250-2876",
+          "o_certificate_status": "reverted",
+          "o_certificate_download_url": "",
+          "o_amount_in_kg": 5960,
+          "o_price_per_amount_in_cents": 938,
+          "o_fee_per_amount_in_cents": 170,
+          "o_vintage": 3032
+        }
+      },
+      "ExternalV2WebhookReturnResponseNStockUpdate": {
+        "type": "object",
+        "example": {
+          "key": "1.stock_update",
+          "o_purchase_transfer_id": "01c44f5477e8cf0c7ce6a3b2c27b9e9",
+          "o_purchaser_email": "nelson@yahoo.com",
+          "o_purchaser_name": "Maynard Mraz",
+          "o_purchaser_organization": "quis maiores est distinctio.",
+          "o_project_id": 1,
+          "o_project_nr": "AHTH001",
+          "o_project_name": "enim enim veniam.",
+          "o_certificate_available": false,
+          "o_certificate_name": "AHTH001-0983-3634",
+          "o_certificate_status": "partially void",
+          "o_certificate_download_url": "",
+          "o_amount_in_kg": 2851,
+          "o_price_per_amount_in_cents": 1016,
+          "o_fee_per_amount_in_cents": 1525,
+          "o_vintage": 2031
+        }
+      },
+      "ExternalV2EventOrderCreateRequest": {
+        "type": "object",
+        "example": {
+          "o_remover_id": 1,
+          "o_project_id": 1,
+          "o_amount_in_kg": 3000,
+          "o_price_per_amount_in_cents": 599,
+          "o_fee_per_amount_in_cents": 199,
+          "o_vintage": 2030,
+          "o_order_date_unix": 1729157386
+        }
+      },
+
+      "ExternalV2EventOrderCreateResponse": {
+        "type": "object",
+        "example": {
+          "o_purchase_transfer_id": "ddbdad8f91ef3733d610e36c5552e9d",
+          "o_certificate_status": "partially void"
+        }
+      },
+      "ExternalV2EventOrderUpdateRequest": {
+        "type": "object",
+        "example": {
+          "o_project_id": 1,
+          "o_purchase_transfer_id": "01c44f5477e8cf0c7ce6a3b2c27b9e9",
+          "o_is_purchase_success": true,
+          "o_is_purchase_reverted": false
+        }
+      },
+      "ExternalV2EventOrderUpdateResponse": {
+        "type": "object",
+        "example": {
+          "o_order": {
+            "o_purchase_transfer_id": "01c44f5477e8cf0c7ce6a3b2c27b9e9",
+            "o_purchaser_email": "o_keefe@gmail.com",
+            "o_purchaser_name": "Nella Vandervort",
+            "o_purchaser_organization": "mollitia non earum ea.",
+            "o_project_id": 1,
+            "o_project_nr": "MOIV001",
+            "o_project_name": "laborum accusamus dignissimos.",
+            "o_certificate_available": false,
+            "o_certificate_name": "MOIV001-0067-9467",
+            "o_certificate_status": "delivered",
+            "o_certificate_download_url": "",
+            "o_amount_in_kg": 7884,
+            "o_price_per_amount_in_cents": 395,
+            "o_fee_per_amount_in_cents": 1959,
+            "o_vintage": 3033
+          },
+          "o_stock": {
+            "o_project_id": 1,
+            "o_stock_sum_in_kg": 100000
+          }
+        }
+      },
+      "ExternalV2GetStockListResponse": {
+        "type": "object",
+        "example": {
+          "o_stock_list": [
+            {
+              "o_project_id": 1,
+              "o_stock_sum_in_kg": 0
+            },
+            {
+              "o_project_id": 2,
+              "o_stock_sum_in_kg": 100000
+            }
+          ]
+        }
+      },
+      "ExternalV2GetOrderListByProjectResponse": {
+        "type": "object",
+        "example": {
+          "o_order_list_by_project": [
+            {
+              "o_project_id": 1,
+              "o_order_list": [
+                {
+                  "o_purchase_transfer_id": "bab18a6d231e5eee70893eeae778ace",
+                  "o_broker_transfer_id": "310abcf4af70e13f6fa630c7c6df6b1",
+                  "o_purchaser_email": "raynor.leila@zik.com",
+                  "o_purchaser_name": "Ms. Ramona Kuvalis",
+                  "o_purchaser_organization": "cumque culpa cupiditate aspernatur.",
+                  "o_project_id": 1,
+                  "o_project_nr": "DEKO001",
+                  "o_project_name": "aut labore quasi.",
+                  "o_certificate_available": true,
+                  "o_certificate_name": "DEKO001-6622-4269",
+                  "o_certificate_status": "partially void",
+                  "o_certificate_download_url": "",
+                  "o_amount_in_kg": 13891,
+                  "o_price_per_amount_in_cents": 327,
+                  "o_fee_per_amount_in_cents": 1748,
+                  "o_vintage": 2030
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "Projects": {
+        "type": "array",
+        "default": [
+          {
+            "project_id": 1,
+            "project_nr": "BBL-L-004",
+            "project_name": "Toulouse 1 Philippe Campos",
+            "project_description": "&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Idemne, quod iucunde? Sedulo, inquam, faciam. Istic sum, inquit. Duo Reges: constructio interrete. At multis se probavit. Apparet statim, quae sint officia, quae actiones.&lt;/p&gt;&lt;p&gt;Efficiens dici potest. Bonum patria: miserum exilium. De hominibus dici non necesse est. Sed quot homines, tot sententiae;&lt;/p&gt;",
+            "project_images": ["v1726564725/web/zrj4xp7d9go7vzwikcrf.png"],
+            "project_pathway": "Land Stored Carbon",
+            "project_methods": [
+              "Regenerative farming",
+              "Bamboo farms",
+              "Food forest",
+              "Paulownia",
+              "Biomass burial",
+              "Miscanthus"
+            ],
+            "project_address": "Blan, Toulouse, FR",
+            "project_area": 0.9,
+            "project_area_unit": "ha",
+            "project_vintages": [
+              2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033,
+              2034, 2035, 0
+            ],
+            "remover_id": 2,
+            "remover_contact_name": "Joost Borneman",
+            "remover_company": "Bamboologic"
+          }
+        ]
+      },
+      "TestLogin": {
+        "type": "object",
+        "default": {
+          "success": true,
+          "user": {
+            "ID": 1,
+            "Type": "",
+            "CompanyName": "BambooLogic",
+            "Email": "test@bamboologic.eu",
+            "Director": "Test Name",
+            "BankAccount": "",
+            "IsRemover": true,
+            "IsBroker": false,
+            "IsPrivate": false,
+            "IsAdmin": false,
+            "GoogleUserID": "",
+            "AvatarURL": "",
+            "TotpSecret": null,
+            "IsTotpValidated": false,
+            "IsLoginDisabled": false,
+            "CreatedAt": "2024-08-01T07:03:30Z",
+            "UpdatedAt": "2024-08-01T07:03:30Z"
+          }
+        }
+      }
+    },
+    "requestBodies": {},
+    "securitySchemes": {
+      "basic": {
+        "type": "http",
+        "scheme": "Basic Authentication",
+        "description": "Basic Authentication from a given username and password. (The username is not your email)"
+      }
+    },
+    "links": {},
+    "callbacks": {}
+  }
+}

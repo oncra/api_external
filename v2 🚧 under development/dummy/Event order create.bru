@@ -1,0 +1,23 @@
+meta {
+  name: Event order create
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base}}/api/external/v2_dummy/event/order/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "o_remover_id": 1,
+    "o_project_id": 1,
+    "o_amount_in_kg": 3000,
+    "o_price_per_amount_in_cents": 599,
+    "o_fee_per_amount_in_cents": 199,
+    "o_vintage": 2030,
+    "o_order_date_unix": 1729157386
+  }
+}

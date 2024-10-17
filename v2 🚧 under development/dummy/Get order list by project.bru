@@ -1,0 +1,20 @@
+meta {
+  name: Get order list by project
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base}}/api/external/v2_dummy/data/order/list-by-project
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "o_project_id": 1,
+    "o_purchase_transfer_id": "01c44f5477e8cf0c7ce6a3b2c27b9e9",
+    "o_is_purchase_success": true,
+    "o_is_purchase_reverted": false
+  }
+}
